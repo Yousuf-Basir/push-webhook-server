@@ -8,6 +8,7 @@ import * as admin from 'firebase-admin';
 import { ExpressAdapter } from '@bull-board/express';
 import { createBullBoard } from '@bull-board/api';
 import { webhookProcess } from './bullProcesses/webhook.process';
+import { callSenderProcess } from './bullProcesses/call.process';
 const { BullAdapter } = require('@bull-board/api/bullAdapter');
 const serviceAccount = require('./firebase/admin-sdk-key.json');
 
@@ -47,10 +48,14 @@ notificationQueue.process(notificationSenderProcess);
 export const webhookQueue = new Bull('webhook', redisOptions);
 webhookQueue.process(webhookProcess);
 
+export const callQueue = new Bull('call', redisOptions);
+callQueue.process(callSenderProcess);
+
 const { addQueue, removeQueue, setQueues, replaceQueues } = createBullBoard({
   queues: [
     new BullAdapter(notificationQueue),
-    new BullAdapter(webhookQueue)
+    new BullAdapter(webhookQueue),
+    new BullAdapter(callQueue)
   ],
   serverAdapter: serverAdapter,
 });
