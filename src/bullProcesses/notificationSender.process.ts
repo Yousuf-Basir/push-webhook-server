@@ -1,6 +1,7 @@
 import { Job } from 'bull';
 import { NotificationPayload } from '../controllers/push.controller';
 import { firebaseCloudMessaging } from '../index';
+import { Message } from 'firebase-admin/lib/messaging/messaging-api';
 
 export const notificationSenderProcess = async (job: Job) => {
     return new Promise<void>(async (resolve, reject) => {
@@ -15,8 +16,7 @@ export const notificationSenderProcess = async (job: Job) => {
             // send notification
             switch (notificationPayload.device_type) {
                 case 'ANDROID':
-                    // send android notification
-                    firebaseCloudMessaging.send({
+                    let message: Message = {
                         notification: {
                             title: notificationPayload.title,
                             body: notificationPayload.message,
@@ -25,7 +25,16 @@ export const notificationSenderProcess = async (job: Job) => {
                         android: {
                             priority: 'high',
                         },
-                    }).then((response) => {
+                    }
+
+                    if(notificationPayload.data) {
+                        message.data = notificationPayload.data
+                    }
+
+                    console.log("message", message);
+
+                    // send android notification
+                    firebaseCloudMessaging.send(message).then((response) => {
                         // resolve bull process if successful
                         job.progress(100);
                         job.moveToCompleted('success', true);

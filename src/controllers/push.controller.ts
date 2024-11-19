@@ -6,12 +6,18 @@ export enum DeviceType {
   IOS = 'IOS',
 }
 
+interface DataPayload {
+  [key: string]: string; // Key-value pairs of data, both keys and values are strings
+};
+
+
 export type NotificationPayload = {
   title: string;
   message: string;
   device_token: string;
   device_type: DeviceType;
   target_time?: Date;
+  data?: DataPayload
 }
 
 export const pushController = async (req: Request, res: Response) => {
