@@ -12,11 +12,11 @@ interface DataPayload {
 
 
 export type NotificationPayload = {
-  title: string;
-  message: string;
   device_token: string;
   device_type: DeviceType;
   target_time?: Date;
+  title?: string;
+  message?: string;
   data?: DataPayload
 }
 

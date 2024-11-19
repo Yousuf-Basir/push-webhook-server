@@ -9,7 +9,7 @@ export const notificationSenderProcess = async (job: Job) => {
             const notificationPayload: NotificationPayload = job.data;
     
             // check if notificationPayload is valid
-            if (!notificationPayload || !notificationPayload.title || !notificationPayload.device_token || !notificationPayload.message || !notificationPayload.device_type) {
+            if (!notificationPayload || !notificationPayload.device_token || !notificationPayload.device_type) {
                 throw new Error('Invalid notification payload');
             }
     
@@ -17,10 +17,6 @@ export const notificationSenderProcess = async (job: Job) => {
             switch (notificationPayload.device_type) {
                 case 'ANDROID':
                     let message: Message = {
-                        notification: {
-                            title: notificationPayload.title,
-                            body: notificationPayload.message,
-                        },
                         token: notificationPayload.device_token,
                         android: {
                             priority: 'high',
@@ -31,7 +27,12 @@ export const notificationSenderProcess = async (job: Job) => {
                         message.data = notificationPayload.data
                     }
 
-                    console.log("message", message);
+                    if(notificationPayload.title && notificationPayload.message) {
+                        message.notification = {
+                            title: notificationPayload.title,
+                            body: notificationPayload.message,
+                        }
+                    }
 
                     // send android notification
                     firebaseCloudMessaging.send(message).then((response) => {
