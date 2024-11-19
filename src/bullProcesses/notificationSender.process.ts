@@ -22,6 +22,9 @@ export const notificationSenderProcess = async (job: Job) => {
                             body: notificationPayload.message,
                         },
                         token: notificationPayload.device_token,
+                        android: {
+                            priority: 'high',
+                        },
                     }).then((response) => {
                         // resolve bull process if successful
                         job.progress(100);
