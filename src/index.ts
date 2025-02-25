@@ -15,7 +15,7 @@ const serviceAccount = require('./firebase/admin-sdk-key.json');
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port: number = (process.env.PORT || 3000) as number;
 
 const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath('/bull-ui');
@@ -78,8 +78,13 @@ app.use('/push', sampleRouter);
 
 app.use('/bull-ui', serverAdapter.getRouter());
 
-app.listen(port, () => {
+// app.listen(port, () => {
+//   console.log(`Server running on port ${port}. REDIS_ENV: ${process.env.REDIS_ENV}`);
+// });
+
+app.listen(port, '0.0.0.0', () => {
   console.log(`Server running on port ${port}. REDIS_ENV: ${process.env.REDIS_ENV}`);
 });
+
 
 export default app;
