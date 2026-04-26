@@ -14,13 +14,6 @@ const serviceAccount = require('./firebase/admin-sdk-key.json');
 
 dotenv.config();
 
-console.log('--- PUSH SERVER STARTUP ---');
-console.log('REDIS_ENV:', process.env.REDIS_ENV);
-console.log('REDIS_HOST:', process.env.REDIS_HOST);
-console.log('REDIS_PORT:', process.env.REDIS_PORT);
-console.log('REDIS_PASSWORD:', process.env.REDIS_PASSWORD ? 'PRESENT' : 'MISSING');
-console.log('---------------------------');
-
 const app = express();
 const port: number = (process.env.PORT || 3000) as number;
 
@@ -46,15 +39,6 @@ if (process.env.REDIS_ENV === 'cpanel') {
       port: 17449
     }
   }
-} else {
-  // Default/Local Redis connection
-  redisOptions = {
-    redis: {
-      host: process.env.REDIS_HOST || 'localhost',
-      port: parseInt(process.env.REDIS_PORT || '6379'),
-      password: process.env.REDIS_PASSWORD || undefined,
-    }
-  };
 }
 
 // Create the Bull queue with the appropriate Redis connection options
@@ -100,7 +84,6 @@ app.use('/bull-ui', serverAdapter.getRouter());
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server running on port ${port}. REDIS_ENV: ${process.env.REDIS_ENV}`);
-  console.log(`FINAL REDIS CONFIG: ${process.env.REDIS_HOST || 'localhost'}:${process.env.REDIS_PORT || '6379'} ${process.env.REDIS_PASSWORD ? '(Authenticated)' : '(No Password)'}`);
 });
 
 
