@@ -39,6 +39,14 @@ if (process.env.REDIS_ENV === 'cpanel') {
       port: 17449
     }
   }
+} else {
+  // Default/Local Redis connection
+  redisOptions = {
+    redis: {
+      host: process.env.REDIS_HOST || 'localhost',
+      port: parseInt(process.env.REDIS_PORT || '6379'),
+    }
+  };
 }
 
 // Create the Bull queue with the appropriate Redis connection options
